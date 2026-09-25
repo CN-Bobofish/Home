@@ -24,7 +24,7 @@
   .wrap{
     max-width:720px;
     margin:0 auto;
-    padding:48px 20px 80px;
+    padding:88px 20px 80px;
   }
   /* 顶部卡片 */
   .hero{
@@ -129,8 +129,62 @@
     opacity:1;
   }
 
+  /* ===== 顶部导航栏 ===== */
+  .navbar{
+    position:fixed;top:0;left:0;right:0;
+    z-index:1000;
+    background:rgba(15,23,42,.72);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 16px 16px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+  }
+  .nav-container{
+    max-width:720px;margin:0 auto;
+    padding:0 20px;
+    height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-logo{
+    font-weight:800;font-size:18px;
+    color:var(--text);
+    text-decoration:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    white-space:nowrap;
+  }
+  .nav-menu{
+    display:flex;align-items:center;gap:6px;
+    list-style:none;margin:0;padding:0;
+  }
+  .nav-link{
+    position:relative;
+    display:block;
+    padding:8px 14px;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:15px;
+    font-weight:600;
+    border-radius:10px;
+    transition:.25s;
+  }
+  .nav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .nav-link.active{color:var(--accent)}
+  .nav-link.active::after{
+    content:"";
+    position:absolute;left:14px;right:14px;bottom:2px;
+    height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+  }
+
   @media(max-width:480px){
-    .wrap{padding:24px 14px 60px}
+    .wrap{padding:80px 14px 60px}
+    .nav-container{height:54px;padding:0 14px}
+    .nav-logo{font-size:16px}
+    .nav-link{font-size:14px;padding:7px 10px}
     h1{font-size:24px}
     .link{padding:14px 16px}
     #toast{font-size:14px;padding:12px 22px;top:16px}
@@ -138,6 +192,18 @@
 </style>
 </head>
 <body>
+
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#" class="nav-logo">MC博博鱼</a>
+    <ul class="nav-menu">
+      <li><a href="#" class="nav-link active">首页</a></li>
+      <li><a href="https://cn-bobofish.github.io/Xlie" target="_blank" rel="noopener" class="nav-link">小烈 AI</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="wrap">
 
   <!-- 个人介绍 -->
