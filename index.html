@@ -180,9 +180,6 @@
   .metrics div{display:flex;flex-direction:column;}
   .metrics b{font-size:18px;font-weight:850;}
   .metrics span{font-size:11.5px;color:var(--text-soft);}
-  .proj .locked{pointer-events:none;}
-  .proj .locked .play{opacity:.5;}
-  .proj .locked .play svg{fill:#94a3b8;}
 
   .contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;}
   .contact-item{
@@ -215,12 +212,17 @@
   .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
     background:rgba(15,23,42,.6);backdrop-filter:blur(8px);}
   .modal.show{display:flex;animation:fadeUp .35s ease both;}
-  .modal .box{background:#fff;border-radius:28px;padding:34px;max-width:440px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3);}
+  .modal .box{background:#fff;border-radius:28px;padding:34px;max-width:520px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3);}
   .modal .box .ic{font-size:42px;margin-bottom:14px;}
   .modal .box h4{font-size:22px;font-weight:850;margin-bottom:10px;}
   .modal .box p{color:var(--text-soft);font-size:15px;margin-bottom:22px;}
   .modal .box .btn-close{padding:11px 34px;border-radius:999px;font-weight:700;cursor:pointer;border:none;
     background:linear-gradient(120deg,var(--accent),var(--accent-3));color:#fff;}
+  .video-error{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    width:100%;height:240px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);border-radius:16px;margin-bottom:14px;}
+  .video-error .err-ic{font-size:48px;margin-bottom:10px;}
+  .video-error .err-text{font-size:15px;font-weight:700;color:#475569;margin-bottom:4px;}
+  .video-error .err-hint{font-size:13px;color:#94a3b8;}
 </style>
 </head>
 <body>
@@ -315,7 +317,7 @@
     <span class="chip" data-f="video">视频号</span>
   </div>
   <div class="projects">
-    <div class="card proj reveal" data-cat="video" data-haslink="false">
+    <div class="card proj reveal" data-cat="video" data-video="2026211.mp4">
       <div class="thumb">
         <span class="date">📅 2026/2/11</span>
         <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -329,7 +331,7 @@
         </div>
       </div>
     </div>
-    <div class="card proj reveal" data-cat="video" data-haslink="false">
+    <div class="card proj reveal" data-cat="video" data-video="202688.mp4">
       <div class="thumb">
         <span class="date">📅 2026/8/8</span>
         <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -367,7 +369,7 @@
     <div class="card contact-item reveal" data-copy="1643657550">
       <div class="icon">🐧</div>
       <div class="txt"><b>QQ</b><small>1643657550</small></div>
-    </div>
+    </a>
     <div class="card contact-item reveal">
       <div class="icon">🐟</div>
       <div class="txt"><b>网络账号</b><small>MC 博博鱼</small></div>
@@ -420,8 +422,13 @@
 
   document.querySelectorAll('.proj').forEach(p=>{
     p.addEventListener('click',()=>{
+      const videoFile = p.dataset.video;
       const title = p.querySelector('h4').innerText;
-      openModal('🎬','视频链接待补充','《'+title+'》的视频链接还没填进来哦～等博博鱼补充后就可以直接观看啦！');
+      if(videoFile){
+        openVideoModal(title, videoFile);
+      } else {
+        openModal('🎬','视频链接待补充','《'+title+'》的视频链接还没填进来哦～等博博鱼补充后就可以直接观看啦！');
+      }
     });
   });
 
@@ -440,13 +447,42 @@
     });
   });
 
+  function openVideoModal(title, videoFile){
+    const modal = document.getElementById('modal');
+    const box = modal.querySelector('.box');
+    box.innerHTML = `
+      <div class="ic">🎬</div>
+      <h4 style="font-size:22px;font-weight:850;margin-bottom:10px;">${title}</h4>
+      <video controls autoplay style="width:100%;max-height:360px;border-radius:16px;margin-bottom:14px;background:#000;"
+        onerror="this.style.display='none';this.parentNode.querySelector('.video-error').style.display='flex';">
+        <source src="${videoFile}" type="video/mp4">
+      </video>
+      <div class="video-error" style="display:none;">
+        <div class="err-ic">🚫</div>
+        <div class="err-text">视频暂无法播放</div>
+        <div class="err-hint">文件可能未找到或格式不受支持</div>
+      </div>
+      <button class="btn-close" onclick="closeModal()">关闭</button>
+    `;
+    modal.classList.add('show');
+  }
+
   function openModal(ic,title,text){
     document.getElementById('modalIc').innerText = ic;
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalText').innerText = text;
     document.getElementById('modal').classList.add('show');
   }
-  function closeModal(){document.getElementById('modal').classList.remove('show');}
+  function closeModal(){
+    document.getElementById('modal').classList.remove('show');
+    const box = document.querySelector('#modal .box');
+    box.innerHTML = `
+      <div class="ic" id="modalIc">ℹ️</div>
+      <h4 id="modalTitle">提示</h4>
+      <p id="modalText">内容加载中…</p>
+      <button class="btn-close" onclick="closeModal()">我知道啦</button>
+    `;
+  }
   document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
 </script>
 </body>
